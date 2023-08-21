@@ -44,12 +44,24 @@ Create a username/password protected API that authenticates API requests using B
 
 The portal will be used to manage data about authors and their books. An author can have zero or more books, a book must have at least one author. An author just has a required name field. Books have a required name field and a required page numbers field.
 
+### User Routes
+ On this routes:
+  - Create User: a new user should be created with the following fields
+     - Username
+     - Password
 
+  - Login User: a endpoint to login in existing users using the following fields
+    - Username
+    - Password
 
+# 
 #### Authors Routes
 
 On this routes:
+ - Create Author: this route creates new authors with the following fields
+   - Name  
 
+# 
  - Fetch Author:  a paginated list of authors with following field and should be searchable
     - Name field
     - Number of Books (Calculated from DB)
@@ -79,4 +91,4 @@ On this routes
 
 ## Notes
 
-The usage of the provided template is mandatory. Submissions not written in this template, will not be reviewed. Writing tests is mandatory. Please fork this repository and invite engineering@kelmaridholdings.com.
+The usage of the provided template is mandatory. Submissions not written in this template, will not be reviewed. Writing tests is mandatory. Please fork this repository and invite engineering@kelmaridholdings.com and send email with the user details to your assessment. 
