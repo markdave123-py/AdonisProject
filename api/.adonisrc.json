@@ -15,7 +15,10 @@
   },
   "preloads": [
     "./start/routes",
-    "./start/kernel"
+    "./start/kernel",
+    "./start/authorRoute/route",
+    "./start/userRoute/route",
+    "./start/bookRoute/route"
   ],
   "providers": [
     "./providers/AppProvider",

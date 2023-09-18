@@ -33,11 +33,12 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-Route.post('/users', 'UsersController.register')
-Route.post('auth/users', 'UsersController.login')
-Route.post('/authors', 'AuthorsController.register')
-Route.post('auth/authors', 'AuthorsController.login')
-Route.post('/books', 'BooksController.store').middleware('auth')
+// Route.post('/users', 'UsersController.register')
+// Route.post('auth/users', 'UsersController.login')
+// Route.post('/authors', 'AuthorsController.register')
+// Route.post('auth/authors', 'AuthorsController.login')
+// Route.put('/authors/:id', 'AuthorsController.update').middleware('auth')
+// Route.post('/books', 'BooksController.store').middleware('auth')
 
 // Route.resource('authors', 'AuthorsController')
 //   .only(['index', 'store', 'show'])

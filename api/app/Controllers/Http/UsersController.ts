@@ -19,6 +19,12 @@ export default class UsersController {
         try {
             const {username, email, password} = request.body()
 
+            const userExists = await User.findBy('email', email);
+
+            if(userExists) return response.status(400).json({
+                message: "This user already exists"
+            })
+
             const user = await User.create({
                 username,
                 email,

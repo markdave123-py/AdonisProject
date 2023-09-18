@@ -15,6 +15,12 @@ export default class BooksController {
         message: "You Can't perform this operation!!"
       }) 
 
+      const bookExists = await Book.findBy('name', name)
+
+      if(bookExists)return response.status(403).json({
+        message: "A book with thia name already exists.."
+      })
+
       const book = await Book.create({
 
         authorId: author_id,
@@ -36,34 +42,40 @@ export default class BooksController {
   }
 
 
-  public async index({request,response,auth}: HttpContextContract) {
 
-    const {page = 1, perPage= 10, search} = request.qs()
+    public async update({ params, request, response, auth}: HttpContextContract) {
+        try {
+    // Find the author by ID
+            const name = request.input('name')
+            const authorId = auth.user?.id
+            const id = parseInt(params.id)
 
-    if(!auth.user) return response.status(401).json({
-        success: false,
-        message: "User Unauthorized..."
-    })
+            if(!name) return response.status(404).json('')
 
-    const query = Author.query()
-      .withCount('books')
-      .select(['id', 'name']);
+            const book = await Book.findBy('id', id)
 
-    if (search) {
-      query.where('name', 'LIKE', `%${search}%`);
+            if(!book) return response.status(404).json({
+                success: false,
+                message: "No book with this Id"
+            })
+
+            if(book.authorId !== authorId) return response.status(401).json({
+                message: "Invalid Request, Unauthorized ...."
+            })
+
+            // Update the author's name
+            book.name = name;
+            await book.save();
+
+            return response.status(200).send({ 
+                message: 'Book name updated successfully', 
+                book: book
+            
+            });
+            } catch (error) {
+                return response.status(500).send({ error: 'An error occurred while updating the author name' });
+        }
     }
 
-    const authors = await query.paginate(page, perPage);
-
-   return response.status(200).json({
-    succss: true,
-    authors: authors
-   })
-
-
-    
   
-
-}
-
 }
