@@ -1,12 +1,18 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Author from 'App/Models/Author';
 import Book from 'App/Models/Book';
+import BookValidator from 'App/Validators/BookValidator';
+import UpdateValidator from 'App/Validators/UpdateValidator';
 
 export default class BooksController {
 
     public async store({request,response,auth}: HttpContextContract) {
-    const { name , number_of_pages } = request.body();
+
+    const payload = await request.validate(BookValidator)
+    
     try {
+
+      const { name , number_of_pages } = payload;
       const author_id = auth.user?.id;
       const author = await Author.findBy('id', author_id)
 
@@ -14,12 +20,6 @@ export default class BooksController {
         success: false,
         message: "You Can't perform this operation!!"
       }) 
-
-      const bookExists = await Book.findBy('name', name)
-
-      if(bookExists)return response.status(403).json({
-        message: "A book with thia name already exists.."
-      })
 
       const book = await Book.create({
 
@@ -44,9 +44,12 @@ export default class BooksController {
 
 
     public async update({ params, request, response, auth}: HttpContextContract) {
+
+        const payload = await  request.validate(UpdateValidator)
         try {
     // Find the author by ID
-            const name = request.input('name')
+            const { name } = payload
+            // const name = request.input('name')
             const authorId = auth.user?.id
             const id = parseInt(params.id)
 

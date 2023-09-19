@@ -1,7 +1,7 @@
-import { schema, CustomMessages,rules } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class CreateUserValidator {
+export default class LoginValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -24,13 +24,15 @@ export default class CreateUserValidator {
    *    ```
    */
   public schema = schema.create({
-    name: schema.string({},[
-      rules.minLength(5),
-      rules.unique({table: "books", column: "name"})
-    ]),
-   
 
+    email: schema.string({},[
+      rules.email()
+    ]),
+    password: schema.string({},[
+      rules.minLength(5)
+    ])
   })
+
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`
    * for targeting nested fields and array expressions `(*)` for targeting all
@@ -43,8 +45,7 @@ export default class CreateUserValidator {
    *
    */
   public messages: CustomMessages = {
-    'required': '{{field}} is required',
-    'name.unique':'The name already exists.',
 
+    "required": "{{field}} is required"
   }
 }

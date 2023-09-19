@@ -1,24 +1,31 @@
 import  Hash  from '@ioc:Adonis/Core/Hash'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Author from 'App/Models/Author'
+import AuthorValidator from 'App/Validators/AuthorValidator'
+import LoginValidator from 'App/Validators/LoginValidator'
+import UpdateValidator from 'App/Validators/UpdateValidator'
 
 export default class AuthorsController {
 
      public async register({request, response }: HttpContextContract){
 
+        const payload = await request.validate(AuthorValidator)
+
         try {
-            const {name, email, password} = request.body()
+            // const {name, email, password} = request.body()
 
-            const authorExists = await Author.findBy('email', email);
+            // const authorExists = await Author.findBy('email', email);
 
-            if(authorExists) return response.status(400).json({
-                message: "This user already exists"
-            })
+            // if(authorExists) return response.status(400).json({
+            //     message: "This user already exists"
+            // })
+
+            const result = await Author.create(payload)
 
             const author = await Author.create({
-                name,
-                email,
-                password
+                name: result.name,
+                email: result.email,
+                password: result.password
             })
 
            
@@ -43,9 +50,12 @@ export default class AuthorsController {
 
     public async login({ auth, request, response }: HttpContextContract){
             
-            const { email, password } = request.body() 
+            const payload = await request.validate(LoginValidator)
 
             try {
+
+                const {email, password} = payload
+                
                 const author = await Author.findBy('email', email)
 
                 if(!author) return response.status(404).json({
@@ -119,13 +129,13 @@ export default class AuthorsController {
     
     
     public async update({ params, request, response, auth}: HttpContextContract) {
+
+        const payload = await request.validate(UpdateValidator)
         try {
     // Find the author by ID
-            const name = request.input('name')
+            const { name } = payload
             const authorId = auth.user?.id
             const id = parseInt(params.id)
-
-            console.log(authorId)
 
             if(authorId !== id) return response.status(403).json({
                 success: false,
@@ -141,7 +151,12 @@ export default class AuthorsController {
 
             return response.status(200).send({ 
                 message: 'Author name updated successfully', 
-                author: author 
+                author: {
+                    name: author?.name,
+                    email: author?.email,
+                    id: author?.id,
+                    updateAt: author?.updatedAt
+                } 
             
             });
             } catch (error) {
